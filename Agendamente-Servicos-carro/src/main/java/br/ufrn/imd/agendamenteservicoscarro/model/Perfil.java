@@ -1,0 +1,24 @@
+package br.ufrn.imd.agendamenteservicoscarro.model;
+
+import br.ufrn.imd.agendamenteservicoscarro.model.enums.PerfilNome;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Table(name = "perfil")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Perfil {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, unique = true)
+    private PerfilNome nome;
+
+}
