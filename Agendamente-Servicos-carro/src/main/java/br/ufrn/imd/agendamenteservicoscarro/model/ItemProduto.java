@@ -1,5 +1,6 @@
 package br.ufrn.imd.agendamenteservicoscarro.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,6 +27,7 @@ public class ItemProduto {
     @JoinColumn(name = "produto_id", nullable = false)
     private Produto produto;
 
+    @JsonIgnore
     @ManyToOne(optional = false)
     @JoinColumn(name = "agendamento_id", nullable = false)
     private Agendamento agendamento;
