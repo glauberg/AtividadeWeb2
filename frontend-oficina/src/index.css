@@ -1,0 +1,349 @@
+/* =============================================
+   VARIÁVEIS DE CORES DO SISTEMA
+   ============================================= */
+:root {
+  --primary:   #0d6efd;
+  --secondary: #6c757d;
+  --success:   #198754;
+  --danger:    #dc3545;
+  --warning:   #fd7e14;
+  --info:      #0dcaf0;
+  --light:     #f8f9fa;
+  --dark:      #212529;
+}
+
+/* =============================================
+   RESET / BASE (seletor por tag)
+   ============================================= */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--light);
+  color: var(--dark);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--dark);
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* =============================================
+   LAYOUT PRINCIPAL
+   ============================================= */
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.page-content {
+  flex: 1;
+  padding: 1.5rem;
+}
+
+/* =============================================
+   NAVBAR / CABEÇALHO (seletor por classe)
+   ============================================= */
+.navbar-brand img {
+  width: 36px;
+  height: 36px;
+  margin-right: 8px;
+}
+
+.navbar-brand span {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #fff;
+}
+
+.navbar-user-info {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-right: 0.5rem;
+}
+
+.btn-logout {
+  color: #fff;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-logout:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* =============================================
+   TABELAS (seletor por tag + classe)
+   ============================================= */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+thead th {
+  background-color: var(--primary);
+  color: #fff;
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+tbody tr {
+  border-bottom: 1px solid #dee2e6;
+  transition: background 0.15s;
+}
+
+tbody tr:hover {
+  background-color: #e8f0fe;
+}
+
+/* linhas alternadas */
+tbody tr:nth-child(even) {
+  background-color: #f1f3f9;
+}
+
+tbody tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+tbody td {
+  padding: 9px 12px;
+  vertical-align: middle;
+}
+
+/* =============================================
+   BOTÕES DE AÇÃO (seletor por id e classe)
+   ============================================= */
+.btn-finalizar {
+  background-color: var(--success);
+  color: #fff;
+  border: none;
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  transition: filter 0.2s;
+}
+
+.btn-finalizar:hover {
+  filter: brightness(1.1);
+}
+
+.btn-cancelar {
+  background-color: var(--danger);
+  color: #fff;
+  border: none;
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  transition: filter 0.2s;
+}
+
+.btn-cancelar:hover {
+  filter: brightness(1.1);
+}
+
+#btn-novo-agendamento {
+  background-color: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 5px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.2s;
+}
+
+#btn-novo-agendamento:hover {
+  background-color: #0b5ed7;
+}
+
+/* =============================================
+   FILTROS
+   ============================================= */
+.filtros-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-end;
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  background: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+}
+
+.filtros-container label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--secondary);
+  display: block;
+  margin-bottom: 3px;
+}
+
+.filtros-container input,
+.filtros-container select {
+  padding: 5px 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 0.88rem;
+  min-width: 160px;
+}
+
+/* =============================================
+   BADGES DE STATUS
+   ============================================= */
+.badge-agendado   { background-color: var(--info);      color: var(--dark); }
+.badge-manutencao { background-color: var(--warning);   color: var(--dark); }
+.badge-concluido  { background-color: var(--success);   color: #fff;        }
+.badge-cancelado  { background-color: var(--secondary); color: #fff;        }
+
+.status-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* =============================================
+   CARDS DE RESUMO (dashboard)
+   ============================================= */
+.summary-card {
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.summary-card .card-icon {
+  font-size: 2.2rem;
+  opacity: 0.85;
+}
+
+.summary-card .card-value {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.summary-card .card-label {
+  font-size: 0.85rem;
+  opacity: 0.85;
+}
+
+.card-primary   { background-color: var(--primary);   }
+.card-success   { background-color: var(--success);   }
+.card-warning   { background-color: var(--warning);   }
+.card-danger    { background-color: var(--danger);    }
+
+/* =============================================
+   FORMULÁRIOS
+   ============================================= */
+.form-section {
+  background: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-section h5 {
+  color: var(--primary);
+  border-bottom: 2px solid var(--primary);
+  padding-bottom: 6px;
+  margin-bottom: 1rem;
+}
+
+/* =============================================
+   RODAPÉ (seletor por id)
+   ============================================= */
+#site-footer {
+  background-color: var(--dark);
+  color: rgba(255, 255, 255, 0.75);
+  padding: 2rem 1.5rem 1rem;
+  font-size: 0.87rem;
+  margin-top: auto;
+}
+
+#site-footer h6 {
+  color: #fff;
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.82rem;
+}
+
+#site-footer a {
+  color: rgba(255, 255, 255, 0.65);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+#site-footer a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.footer-social a {
+  font-size: 1.3rem;
+  margin-right: 0.7rem;
+}
+
+.footer-copy {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  margin-top: 1.5rem;
+  padding-top: 0.75rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* =============================================
+   RESPONSIVIDADE
+   ============================================= */
+@media (max-width: 768px) {
+  .filtros-container {
+    flex-direction: column;
+  }
+  thead th, tbody td {
+    font-size: 0.8rem;
+    padding: 7px 8px;
+  }
+  .summary-card {
+    flex-direction: column;
+    text-align: center;
+  }
+}
