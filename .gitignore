@@ -1,2 +1,7 @@
 frontend-oficina/node_modules/
 backend-oficina/node_modules/
+.idea/
+.vscode/
+node_modules/
+dist/
+frontend-oficina/dist/
