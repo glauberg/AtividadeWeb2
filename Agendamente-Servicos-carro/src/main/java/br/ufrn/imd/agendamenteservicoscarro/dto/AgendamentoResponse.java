@@ -22,11 +22,13 @@ public record AgendamentoResponse(
         ClienteInfo cliente,
         VeiculoInfo veiculo,
         FuncionarioInfo funcionario,
-        List<String> servicos
+        List<String> servicos,
+        List<ProdutoInfo> produtos
 ) {
     public record ClienteInfo(String nome, String telefone) {}
     public record VeiculoInfo(String modelo, String placa) {}
     public record FuncionarioInfo(String nome) {}
+    public record ProdutoInfo(String nome, Integer quantidade, Double subtotal) {}
 
     /** Converte uma entidade Agendamento para este DTO. */
     public static AgendamentoResponse from(Agendamento a) {
@@ -40,7 +42,13 @@ public record AgendamentoResponse(
                 a.getMecanicoResponsavel() != null
                         ? new FuncionarioInfo(a.getMecanicoResponsavel().getNome())
                         : null,
-                a.getServicos().stream().map(s -> s.getNome()).toList()
+                a.getServicos().stream().map(s -> s.getNome()).toList(),
+                a.getItensProduto() != null ? a.getItensProduto().stream()
+                        .map(item -> new ProdutoInfo(
+                                item.getProduto().getNome(),
+                                item.getQuantidade(),
+                                item.getQuantidade() * item.getPrecoUnitarioHistorico()
+                        )).toList() : java.util.List.of()
         );
     }
 }
