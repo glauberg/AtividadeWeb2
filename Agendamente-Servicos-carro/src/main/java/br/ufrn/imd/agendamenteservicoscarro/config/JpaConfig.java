@@ -1,7 +1,12 @@
 package br.ufrn.imd.agendamenteservicoscarro.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
+import jakarta.persistence.EntityManagerFactory;
+import org.springframework.context.annotation.Bean;
 
 /**
  * Configuração explícita dos repositórios JPA.
@@ -24,5 +29,14 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
         basePackages = "br.ufrn.imd.agendamenteservicoscarro.repository"
 )
 public class JpaConfig {
-    // Configuração via anotação — nenhum bean adicional necessário.
+
+    /**
+     * Define o JpaTransactionManager como gerenciador de transações primário,
+     * resolvendo a ambiguidade quando JPA e MongoDB coexistem no contexto.
+     */
+    @Bean
+    @Primary
+    public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {
+        return new JpaTransactionManager(emf);
+    }
 }

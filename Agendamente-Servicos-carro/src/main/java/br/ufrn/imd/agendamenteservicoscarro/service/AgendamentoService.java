@@ -37,8 +37,8 @@ public class AgendamentoService {
     @Transactional(readOnly = true)
     public List<AgendamentoResponse> listar(Long clienteId) {
         List<Agendamento> lista = (clienteId != null)
-                ? agendamentoRepository.findByClienteId(clienteId)
-                : agendamentoRepository.findAll();
+                ? agendamentoRepository.findByClienteIdComServicos(clienteId)
+                : agendamentoRepository.findAllComServicos();
         return lista.stream().map(AgendamentoResponse::from).toList();
     }
 
