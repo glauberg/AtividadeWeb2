@@ -10,6 +10,7 @@ import br.ufrn.imd.agendamenteservicoscarro.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,29 +19,20 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final UsuarioService usuarioService;
-    private final JwtUtil        jwtUtil;
+    private final JwtUtil jwtUtil;
+    private final PasswordEncoder passwordEncoder;
 
-    /**
-     * POST /auth/login
-     * Valida credenciais e retorna { usuario: { id, email, nome, perfil }, token }.
-     *
-     * ATENÇÃO: as senhas estão em texto plano no banco por ora (data.sql).
-     * TODO: migrar para BCryptPasswordEncoder.
-     */
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody LoginRequest req) {
         try {
             Usuario usuario = usuarioService.buscarPorEmail(req.email());
 
             if (!usuario.getAtivo()) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body("Usuário inativo.");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Usuario inativo.");
             }
 
-            // Comparação simples enquanto as senhas estão em texto plano
-            if (!usuario.getSenha().equals(req.senha())) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body("E-mail ou senha inválidos.");
+            if (!senhaValida(usuario, req.senha())) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("E-mail ou senha invalidos.");
             }
 
             String perfilNome = usuario.getPerfil().getNome().name();
@@ -58,8 +50,25 @@ public class AuthController {
             return ResponseEntity.ok(response);
 
         } catch (java.util.NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("E-mail ou senha inválidos.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("E-mail ou senha invalidos.");
         }
+    }
+
+    private boolean senhaValida(Usuario usuario, String senhaInformada) {
+        String senhaSalva = usuario.getSenha();
+        if (senhaSalva == null || senhaInformada == null) {
+            return false;
+        }
+
+        if (senhaSalva.startsWith("$2") && passwordEncoder.matches(senhaInformada, senhaSalva)) {
+            return true;
+        }
+
+        if (senhaSalva.equals(senhaInformada)) {
+            usuarioService.atualizarSenhaHash(usuario, senhaInformada);
+            return true;
+        }
+
+        return false;
     }
 }

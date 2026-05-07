@@ -6,6 +6,7 @@ import br.ufrn.imd.agendamenteservicoscarro.model.Usuario;
 import br.ufrn.imd.agendamenteservicoscarro.repository.PerfilRepository;
 import br.ufrn.imd.agendamenteservicoscarro.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,7 @@ public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final PerfilRepository  perfilRepository;
+    private final PasswordEncoder passwordEncoder;
 
     /** Lista todos os usuários como DTO. */
     @Transactional(readOnly = true)
@@ -57,7 +59,7 @@ public class UsuarioService {
 
         Usuario usuario = new Usuario();
         usuario.setEmail(email);
-        usuario.setSenha(senha);          // TODO: BCryptPasswordEncoder
+        usuario.setSenha(passwordEncoder.encode(senha));
         usuario.setAtivo(true);
         usuario.setPerfil(perfil);
         // O vínculo com Pessoa (Cliente ou Funcionario) deve ser feito
@@ -73,5 +75,11 @@ public class UsuarioService {
         Usuario usuario = buscarPorId(id);
         usuario.setAtivo(!usuario.getAtivo());
         return UsuarioResponse.from(usuarioRepository.save(usuario));
+    }
+
+    @Transactional
+    public void atualizarSenhaHash(Usuario usuario, String senhaPura) {
+        usuario.setSenha(passwordEncoder.encode(senhaPura));
+        usuarioRepository.save(usuario);
     }
 }
