@@ -1,5 +1,6 @@
 package br.ufrn.imd.agendamenteservicoscarro.service;
 
+import br.ufrn.imd.agendamenteservicoscarro.audit.AuditoriaService;
 import br.ufrn.imd.agendamenteservicoscarro.dto.AgendamentoRequest;
 import br.ufrn.imd.agendamenteservicoscarro.dto.AgendamentoResponse;
 import br.ufrn.imd.agendamenteservicoscarro.model.Agendamento;
@@ -13,6 +14,8 @@ import br.ufrn.imd.agendamenteservicoscarro.repository.FuncionarioRepository;
 import br.ufrn.imd.agendamenteservicoscarro.repository.ServicoRepository;
 import br.ufrn.imd.agendamenteservicoscarro.repository.VeiculoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,9 +28,10 @@ import java.util.NoSuchElementException;
 public class AgendamentoService {
 
     private final AgendamentoRepository agendamentoRepository;
-    private final VeiculoRepository     veiculoRepository;
+    private final VeiculoRepository veiculoRepository;
     private final FuncionarioRepository funcionarioRepository;
-    private final ServicoRepository     servicoRepository;
+    private final ServicoRepository servicoRepository;
+    private final AuditoriaService auditoriaService;
 
     /** Lista todos os agendamentos, ou filtra por clienteId se fornecido. */
     @Transactional(readOnly = true)
@@ -47,6 +51,7 @@ public class AgendamentoService {
     /**
      * Cria um novo agendamento a partir do DTO do frontend.
      * Calcula valorTotal como soma dos precoBase dos serviços selecionados.
+     * Registra evento de auditoria no MongoDB.
      */
     @Transactional
     public AgendamentoResponse criar(AgendamentoRequest req) {
@@ -76,19 +81,41 @@ public class AgendamentoService {
         agendamento.setVeiculo(veiculo);
         agendamento.setServicos(servicos);
 
-        return AgendamentoResponse.from(agendamentoRepository.save(agendamento));
+        AgendamentoResponse resposta = AgendamentoResponse.from(agendamentoRepository.save(agendamento));
+
+        auditoriaService.registrar(
+                "CRIAR",
+                "Agendamento",
+                resposta.id(),
+                emailDoUsuarioLogado(),
+                "Agendamento criado para veículo id=" + req.veiculoId()
+                        + ", mecânico id=" + req.mecanicoId()
+                        + ", valor=R$" + valorTotal);
+
+        return resposta;
     }
 
     /**
      * Atualiza apenas o status de um agendamento.
      * Regras: AGENDADO → EM_MANUTENCAO → CONCLUIDO; qualquer ativo → CANCELADO.
+     * Registra evento de auditoria no MongoDB.
      */
     @Transactional
     public AgendamentoResponse atualizarStatus(Long id, String novoStatus) {
         Agendamento agendamento = buscarEntidade(id);
+        StatusAgendamento statusAnterior = agendamento.getStatus();
         StatusAgendamento status = StatusAgendamento.valueOf(novoStatus);
         agendamento.setStatus(status);
-        return AgendamentoResponse.from(agendamentoRepository.save(agendamento));
+        AgendamentoResponse resposta = AgendamentoResponse.from(agendamentoRepository.save(agendamento));
+
+        auditoriaService.registrar(
+                "ATUALIZAR_STATUS",
+                "Agendamento",
+                id,
+                emailDoUsuarioLogado(),
+                "Status alterado de " + statusAnterior + " para " + novoStatus);
+
+        return resposta;
     }
 
     // --- helpers ---
@@ -96,5 +123,17 @@ public class AgendamentoService {
     private Agendamento buscarEntidade(Long id) {
         return agendamentoRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Agendamento não encontrado: id=" + id));
+    }
+
+    /**
+     * Obtém o e-mail do usuário autenticado via SecurityContext. Retorna "ANONIMO"
+     * se não houver.
+     */
+    private String emailDoUsuarioLogado() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getPrincipal())) {
+            return auth.getName();
+        }
+        return "ANONIMO";
     }
 }

@@ -32,10 +32,12 @@ export default function VeiculosPage() {
   async function handleSave(e) {
     e.preventDefault()
     try {
-      const r = await api.post('/veiculos', form)
+      const { clienteId, ...dadosVeiculo } = form
+      const r = await api.post(`/veiculos?clienteId=${clienteId}`, dadosVeiculo)
       setVeiculos(prev => [...prev, r.data])
-    } catch {
-      setVeiculos(prev => [...prev, { id: Date.now(), ...form, cliente: { nome: 'Cliente #' + form.clienteId } }])
+    } catch (err) {
+      console.error("Falha ao salvar veículo", err)
+      alert("Erro ao salvar veículo no banco de dados.")
     }
     setModal(false)
     setForm({ placa: '', modelo: '', marca: '', clienteId: '' })

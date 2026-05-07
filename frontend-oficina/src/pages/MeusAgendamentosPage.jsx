@@ -15,12 +15,12 @@ function fmt(iso) {
 
 export default function MeusAgendamentosPage() {
   const { user } = useAuth()
-  const [lista, setLista] = useState(MOCK)
+  const [lista, setLista] = useState([])
 
   useEffect(() => {
     api.get(`/agendamentos?clienteId=${user?.id}`)
       .then(r => setLista(r.data))
-      .catch(() => {})
+      .catch(err => console.error(err))
   }, [user])
 
   return (

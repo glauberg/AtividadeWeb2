@@ -11,7 +11,7 @@ const MOCK = [
 ]
 
 export default function ServicosPage() {
-  const [servicos, setServicos] = useState(MOCK)
+  const [servicos, setServicos] = useState([])
   const [modal, setModal] = useState(false)
   const [form, setForm] = useState({ nome: '', precoBase: '' })
 
@@ -28,8 +28,9 @@ export default function ServicosPage() {
     try {
       const r = await api.post('/servicos', form)
       setServicos(prev => [...prev, r.data])
-    } catch {
-      setServicos(prev => [...prev, { id: Date.now(), ...form, precoBase: parseFloat(form.precoBase) }])
+    } catch (err) {
+      console.error(err)
+      alert("Erro ao salvar serviço.")
     }
     setModal(false)
     setForm({ nome: '', precoBase: '' })

@@ -8,7 +8,7 @@ const MOCK = [
 ]
 
 export default function ClientesPage() {
-  const [clientes, setClientes] = useState(MOCK)
+  const [clientes, setClientes] = useState([])
   const [busca, setBusca] = useState('')
   const [modal, setModal] = useState(false)
   const [form, setForm] = useState({ nome: '', cpf: '', telefone: '' })
@@ -32,8 +32,9 @@ export default function ClientesPage() {
     try {
       const r = await api.post('/clientes', form)
       setClientes(prev => [...prev, r.data])
-    } catch {
-      setClientes(prev => [...prev, { id: Date.now(), ...form }])
+    } catch (err) {
+      console.error("Erro ao salvar", err)
+      alert("Erro ao salvar cliente.")
     }
     setModal(false)
     setForm({ nome: '', cpf: '', telefone: '' })

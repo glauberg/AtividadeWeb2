@@ -15,7 +15,7 @@ const LABEL_PERFIL = {
 }
 
 export default function UsuariosPage() {
-  const [usuarios, setUsuarios] = useState(MOCK)
+  const [usuarios, setUsuarios] = useState([])
   const [modal, setModal] = useState(false)
   const [form, setForm] = useState({ email: '', senha: '', perfilId: '' })
 
@@ -32,11 +32,9 @@ export default function UsuariosPage() {
     try {
       const r = await api.post('/usuarios', form)
       setUsuarios(prev => [...prev, r.data])
-    } catch {
-      setUsuarios(prev => [...prev, {
-        id: Date.now(), email: form.email, nome: form.email.split('@')[0],
-        ativo: true, perfil: { nome: ['ROLE_CLIENTE', 'ROLE_GERENTE', 'ROLE_MECANICO'][form.perfilId - 1] }
-      }])
+    } catch (err) {
+      console.error(err)
+      alert("Erro ao salvar usuário.")
     }
     setModal(false)
     setForm({ email: '', senha: '', perfilId: '' })

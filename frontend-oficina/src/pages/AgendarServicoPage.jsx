@@ -6,9 +6,9 @@ const MOCK_SERVICOS  = [{ id: 1, nome: 'Troca de Óleo', precoBase: 150 }, { id:
 const MOCK_MECANICOS = [{ id: 5, nome: 'Pedro Mec' }, { id: 6, nome: 'Lucas Mec' }]
 
 export default function AgendarServicoPage() {
-  const [veiculos, setVeiculos]   = useState(MOCK_VEICULOS)
-  const [servicos, setServicos]   = useState(MOCK_SERVICOS)
-  const [mecanicos, setMecanicos] = useState(MOCK_MECANICOS)
+  const [veiculos, setVeiculos]   = useState([])
+  const [servicos, setServicos]   = useState([])
+  const [mecanicos, setMecanicos] = useState([])
   const [form, setForm] = useState({ veiculoId: '', dataHora: '', mecanicoId: '', servicoIds: [] })
   const [sucesso, setSucesso] = useState(false)
   const [erro, setErro] = useState('')
@@ -39,9 +39,8 @@ export default function AgendarServicoPage() {
     try {
       await api.post('/agendamentos', form)
       setSucesso(true)
-    } catch {
-      // Mock success
-      setSucesso(true)
+    } catch (err) {
+      setErro('Erro ao agendar serviço: ' + (err.response?.data || err.message))
     }
   }
 

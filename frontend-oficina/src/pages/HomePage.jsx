@@ -33,7 +33,7 @@ function SummaryCard({ icon, value, label, colorClass }) {
 
 export default function HomePage() {
   const { user } = useAuth()
-  const [agendamentos, setAgendamentos] = useState(MOCK_AGENDAMENTOS)
+  const [agendamentos, setAgendamentos] = useState([])
   const [filtroCliente, setFiltroCliente] = useState('')
   const [filtroVeiculo, setFiltroVeiculo] = useState('')
   const [filtroStatus, setFiltroStatus] = useState('')
@@ -41,7 +41,7 @@ export default function HomePage() {
   useEffect(() => {
     api.get('/agendamentos')
       .then(r => setAgendamentos(r.data))
-      .catch(() => { /* mantém mock */ })
+      .catch(err => console.error("Erro ao carregar agendamentos", err))
   }, [])
 
   const dados = agendamentos.filter(a => {

@@ -17,7 +17,7 @@ function fmt(iso) {
 }
 
 export default function AgendamentosPage() {
-  const [lista, setLista] = useState(MOCK)
+  const [lista, setLista] = useState([])
   const [filtroCliente, setFiltroCliente] = useState('')
   const [filtroVeiculo, setFiltroVeiculo] = useState('')
   const [filtroStatus, setFiltroStatus] = useState('')
@@ -34,8 +34,12 @@ export default function AgendamentosPage() {
   })
 
   function changeStatus(id, novoStatus) {
-    api.patch(`/agendamentos/${id}/status`, { status: novoStatus }).catch(() => {})
-    setLista(prev => prev.map(a => a.id === id ? { ...a, status: novoStatus } : a))
+    api.patch(`/agendamentos/${id}/status`, { status: novoStatus })
+      .then(() => setLista(prev => prev.map(a => a.id === id ? { ...a, status: novoStatus } : a)))
+      .catch(err => {
+        console.error(err)
+        alert('Erro ao atualizar status do agendamento.')
+      })
   }
 
   return (

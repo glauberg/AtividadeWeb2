@@ -44,11 +44,7 @@ public class Agendamento {
     private Veiculo veiculo;
 
     @ManyToMany
-    @JoinTable(
-        name = "agendamento_servico",
-        joinColumns = @JoinColumn(name = "agendamento_id"),
-        inverseJoinColumns = @JoinColumn(name = "servico_id")
-    )
+    @JoinTable(name = "agendamento_servico", joinColumns = @JoinColumn(name = "agendamento_id"), inverseJoinColumns = @JoinColumn(name = "servico_id"))
     private List<Servico> servicos = new ArrayList<>();
 
     @OneToMany(mappedBy = "agendamento", cascade = CascadeType.ALL, orphanRemoval = true)

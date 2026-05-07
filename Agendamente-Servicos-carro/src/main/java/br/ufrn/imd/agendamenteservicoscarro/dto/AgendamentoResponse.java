@@ -24,7 +24,7 @@ public record AgendamentoResponse(
         FuncionarioInfo funcionario,
         List<String> servicos
 ) {
-    public record ClienteInfo(String nome) {}
+    public record ClienteInfo(String nome, String telefone) {}
     public record VeiculoInfo(String modelo, String placa) {}
     public record FuncionarioInfo(String nome) {}
 
@@ -35,7 +35,7 @@ public record AgendamentoResponse(
                 a.getDataHora().toString(),
                 a.getStatus().name(),
                 a.getValorTotal(),
-                new ClienteInfo(a.getCliente().getNome()),
+                new ClienteInfo(a.getCliente().getNome(), a.getCliente().getTelefone()),
                 new VeiculoInfo(a.getVeiculo().getModelo(), a.getVeiculo().getPlaca()),
                 a.getMecanicoResponsavel() != null
                         ? new FuncionarioInfo(a.getMecanicoResponsavel().getNome())

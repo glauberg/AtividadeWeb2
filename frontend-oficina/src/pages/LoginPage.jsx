@@ -58,7 +58,7 @@ export default function LoginPage() {
           <div className="text-center mb-4">
             <i className="bi bi-car-front-fill text-primary" style={{ fontSize: '2.8rem' }}></i>
             <h4 className="mt-2 mb-0 fw-bold">AutoAgenda</h4>
-            <p className="text-muted small">Sistema de Agendamento de Oficina</p>
+            <p className="text-muted small">Sistema de Agendamento de Oficina Automotiva</p>
           </div>
 
           {erro && (
