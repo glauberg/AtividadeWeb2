@@ -28,7 +28,7 @@ public record AgendamentoResponse(
     public record ClienteInfo(String nome, String telefone) {}
     public record VeiculoInfo(String modelo, String placa) {}
     public record FuncionarioInfo(String nome) {}
-    public record ProdutoInfo(String nome, Integer quantidade, Double subtotal) {}
+    public record ProdutoInfo(String nome, Integer quantidade, Double precoUnitario, Double subtotal) {}
 
     /** Converte uma entidade Agendamento para este DTO. */
     public static AgendamentoResponse from(Agendamento a) {
@@ -47,6 +47,7 @@ public record AgendamentoResponse(
                         .map(item -> new ProdutoInfo(
                                 item.getProduto().getNome(),
                                 item.getQuantidade(),
+                                item.getPrecoUnitarioHistorico(),
                                 item.getQuantidade() * item.getPrecoUnitarioHistorico()
                         )).toList() : java.util.List.of()
         );

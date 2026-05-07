@@ -3,12 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import api from '../services/api'
 
-// Usuários mock para desenvolvimento (remover quando JWT estiver implementado)
-const MOCK_USERS = [
-  { id: 1, email: 'admin@oficina.com', senha: 'senha123', nome: 'Administrador', perfil: 'ROLE_GERENTE' },
-  { id: 2, email: 'joao@email.com', senha: 'senha123', nome: 'João', perfil: 'ROLE_CLIENTE' },
-  { id: 5, email: 'pedro.mec@oficina.com', senha: 'senha123', nome: 'Pedro', perfil: 'ROLE_MECANICO' },
-]
+
 
 export default function LoginPage() {
   const { login } = useAuth()
@@ -32,16 +27,7 @@ export default function LoginPage() {
       login(res.data.usuario, res.data.token)
       navigate('/')
     } catch {
-      // Fallback mock para desenvolvimento sem backend
-      const mockUser = MOCK_USERS.find(
-        u => u.email === form.email && u.senha === form.senha
-      )
-      if (mockUser) {
-        login(mockUser, 'mock-token-' + mockUser.perfil)
-        navigate('/')
-      } else {
-        setErro('E-mail ou senha inválidos.')
-      }
+      setErro('E-mail ou senha inválidos ou erro no servidor.')
     } finally {
       setLoading(false)
     }

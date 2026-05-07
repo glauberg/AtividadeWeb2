@@ -62,7 +62,7 @@ function AppRoutes() {
       } />
 
       <Route path="/veiculos" element={
-        <PrivateRoute roles={['ROLE_GERENTE']}>
+        <PrivateRoute roles={['ROLE_GERENTE', 'ROLE_CLIENTE']}>
           <Layout><VeiculosPage /></Layout>
         </PrivateRoute>
       } />

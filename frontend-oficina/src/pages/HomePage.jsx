@@ -4,15 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import StatusBadge from '../components/StatusBadge'
 import api from '../services/api'
 
-// Dados mock para demonstração
-const MOCK_AGENDAMENTOS = [
-  { id: 1, dataHora: '2026-05-10T08:00', status: 'AGENDADO',      valorTotal: 220, cliente: { nome: 'João Silva', telefone: '84911111111' }, veiculo: { modelo: 'Corolla', placa: 'ABC-1234' }, funcionario: { nome: 'Pedro Mec' }, servicos: ['Troca de Óleo'] },
-  { id: 2, dataHora: '2026-05-10T10:00', status: 'EM_MANUTENCAO', valorTotal: 300, cliente: { nome: 'Maria Santos', telefone: '84922222222' }, veiculo: { modelo: 'Fiesta', placa: 'GHI-9012' }, funcionario: { nome: 'Lucas Mec' }, servicos: ['Troca de Pastilhas'] },
-  { id: 3, dataHora: '2026-05-11T14:00', status: 'CONCLUIDO',     valorTotal: 450, cliente: { nome: 'Carlos Lima', telefone: '84933333333' }, veiculo: { modelo: 'Onix', placa: 'JKL-3456' }, funcionario: { nome: 'Pedro Mec' }, servicos: ['Revisão Geral'] },
-  { id: 4, dataHora: '2026-05-11T16:00', status: 'CANCELADO',     valorTotal: 0,   cliente: { nome: 'Carlos Lima', telefone: '84933333333' }, veiculo: { modelo: 'HB20', placa: 'MNO-7890' }, funcionario: { nome: 'Lucas Mec' }, servicos: ['Alinhamento'] },
-  { id: 5, dataHora: '2026-05-12T09:00', status: 'AGENDADO',      valorTotal: 180, cliente: { nome: 'João Silva', telefone: '84911111111' }, veiculo: { modelo: 'Civic', placa: 'DEF-5678' }, funcionario: { nome: 'Pedro Mec' }, servicos: ['Alinhamento', 'Balanceamento'] },
-  { id: 6, dataHora: '2026-05-12T11:00', status: 'CONCLUIDO',     valorTotal: 550, cliente: { nome: 'Carlos Lima', telefone: '84933333333' }, veiculo: { modelo: 'Argo', placa: 'PQR-1234' }, funcionario: { nome: 'Lucas Mec' }, servicos: ['Revisão Geral'] },
-]
+
 
 function formatarData(iso) {
   const d = new Date(iso)

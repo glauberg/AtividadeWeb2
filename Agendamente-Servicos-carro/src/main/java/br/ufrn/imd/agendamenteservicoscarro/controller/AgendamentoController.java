@@ -6,6 +6,7 @@ import br.ufrn.imd.agendamenteservicoscarro.service.AgendamentoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,6 +39,8 @@ public class AgendamentoController {
     public ResponseEntity<Object> buscarPorId(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(agendamentoService.buscarPorId(id));
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
@@ -53,6 +56,8 @@ public class AgendamentoController {
         try {
             AgendamentoResponse criado = agendamentoService.criar(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(criado);
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (IllegalArgumentException e) {
@@ -72,6 +77,8 @@ public class AgendamentoController {
         try {
             String novoStatus = body.get("status");
             return ResponseEntity.ok(agendamentoService.atualizarStatus(id, novoStatus));
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (IllegalArgumentException e) {

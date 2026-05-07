@@ -6,5 +6,5 @@ package br.ufrn.imd.agendamenteservicoscarro.dto;
  * onde perfil é a string do papel (ex: "ROLE_GERENTE").
  */
 public record LoginResponse(UsuarioInfo usuario, String token) {
-    public record UsuarioInfo(Long id, String email, String nome, String perfil) {}
+    public record UsuarioInfo(Long id, Long pessoaId, Long clienteId, String email, String nome, String perfil) {}
 }

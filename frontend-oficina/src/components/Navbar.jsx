@@ -5,7 +5,7 @@ export default function Navbar() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
 
-  const perfil = user?.perfil  // 'ROLE_CLIENTE' | 'ROLE_GERENTE' | 'ROLE_MECANICO'
+  const perfil = user?.perfil
 
   function handleLogout() {
     logout()
@@ -15,13 +15,11 @@ export default function Navbar() {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
       <div className="container-fluid">
-        {/* Brand / Logo */}
         <Link className="navbar-brand d-flex align-items-center" to="/">
           <i className="bi bi-car-front-fill fs-4 me-2"></i>
           <span>Oficina AutoAgenda</span>
         </Link>
 
-        {/* Toggler mobile */}
         <button
           className="navbar-toggler"
           type="button"
@@ -34,14 +32,12 @@ export default function Navbar() {
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        {/* Menu */}
         <div className="collapse navbar-collapse" id="navMenu">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
               <Link className="nav-link" to="/"><i className="bi bi-house me-1"></i>Home</Link>
             </li>
 
-            {/* CLIENTE */}
             {perfil === 'ROLE_CLIENTE' && (
               <>
                 <li className="nav-item">
@@ -50,14 +46,18 @@ export default function Navbar() {
                   </Link>
                 </li>
                 <li className="nav-item">
+                  <Link className="nav-link" to="/veiculos">
+                    <i className="bi bi-truck me-1"></i>Meus Veiculos
+                  </Link>
+                </li>
+                <li className="nav-item">
                   <Link className="nav-link" to="/agendar">
-                    <i className="bi bi-plus-circle me-1"></i>Agendar Serviço
+                    <i className="bi bi-plus-circle me-1"></i>Agendar Servico
                   </Link>
                 </li>
               </>
             )}
 
-            {/* GERENTE */}
             {perfil === 'ROLE_GERENTE' && (
               <>
                 <li className="nav-item">
@@ -67,12 +67,12 @@ export default function Navbar() {
                 </li>
                 <li className="nav-item">
                   <Link className="nav-link" to="/veiculos">
-                    <i className="bi bi-truck me-1"></i>Veículos
+                    <i className="bi bi-truck me-1"></i>Veiculos
                   </Link>
                 </li>
                 <li className="nav-item">
                   <Link className="nav-link" to="/servicos">
-                    <i className="bi bi-wrench me-1"></i>Serviços
+                    <i className="bi bi-wrench me-1"></i>Servicos
                   </Link>
                 </li>
                 <li className="nav-item">
@@ -82,13 +82,12 @@ export default function Navbar() {
                 </li>
                 <li className="nav-item">
                   <Link className="nav-link" to="/usuarios">
-                    <i className="bi bi-person-gear me-1"></i>Usuários
+                    <i className="bi bi-person-gear me-1"></i>Usuarios
                   </Link>
                 </li>
               </>
             )}
 
-            {/* MECÂNICO */}
             {perfil === 'ROLE_MECANICO' && (
               <li className="nav-item">
                 <Link className="nav-link" to="/agendamentos">
@@ -98,7 +97,6 @@ export default function Navbar() {
             )}
           </ul>
 
-          {/* Usuário logado + logout */}
           {user && (
             <div className="d-flex align-items-center gap-2">
               <span className="navbar-user-info">

@@ -2,6 +2,8 @@ package br.ufrn.imd.agendamenteservicoscarro.controller;
 
 import br.ufrn.imd.agendamenteservicoscarro.dto.LoginRequest;
 import br.ufrn.imd.agendamenteservicoscarro.dto.LoginResponse;
+import br.ufrn.imd.agendamenteservicoscarro.model.Cliente;
+import br.ufrn.imd.agendamenteservicoscarro.model.Pessoa;
 import br.ufrn.imd.agendamenteservicoscarro.model.Usuario;
 import br.ufrn.imd.agendamenteservicoscarro.security.JwtUtil;
 import br.ufrn.imd.agendamenteservicoscarro.service.UsuarioService;
@@ -42,12 +44,15 @@ public class AuthController {
             }
 
             String perfilNome = usuario.getPerfil().getNome().name();
-            String nome = usuario.getPessoa() != null ? usuario.getPessoa().getNome() : usuario.getEmail();
+            Pessoa pessoa = usuario.getPessoa();
+            String nome = pessoa != null ? pessoa.getNome() : usuario.getEmail();
+            Long pessoaId = pessoa != null ? pessoa.getId() : null;
+            Long clienteId = pessoa instanceof Cliente cliente ? cliente.getId() : null;
 
             String token = jwtUtil.gerarToken(usuario.getId(), usuario.getEmail(), perfilNome);
 
             LoginResponse response = new LoginResponse(
-                    new LoginResponse.UsuarioInfo(usuario.getId(), usuario.getEmail(), nome, perfilNome),
+                    new LoginResponse.UsuarioInfo(usuario.getId(), pessoaId, clienteId, usuario.getEmail(), nome, perfilNome),
                     token
             );
             return ResponseEntity.ok(response);

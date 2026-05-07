@@ -1,15 +1,11 @@
 import { useState, useEffect } from 'react'
+import { useAuth } from '../context/AuthContext'
 import api from '../services/api'
 
-const MOCK = [
-  { id: 1, placa: 'ABC-1234', modelo: 'Corolla', marca: 'Toyota', cliente: { nome: 'João Silva' } },
-  { id: 2, placa: 'DEF-5678', modelo: 'Civic',   marca: 'Honda',  cliente: { nome: 'João Silva' } },
-  { id: 3, placa: 'GHI-9012', modelo: 'Fiesta',  marca: 'Ford',   cliente: { nome: 'Maria Santos' } },
-  { id: 4, placa: 'JKL-3456', modelo: 'Onix',    marca: 'Chevrolet', cliente: { nome: 'Carlos Lima' } },
-]
-
 export default function VeiculosPage() {
-  const [veiculos, setVeiculos] = useState(MOCK)
+  const { user } = useAuth()
+  const ehCliente = user?.perfil === 'ROLE_CLIENTE'
+  const [veiculos, setVeiculos] = useState([])
   const [busca, setBusca] = useState('')
   const [modal, setModal] = useState(false)
   const [form, setForm] = useState({ placa: '', modelo: '', marca: '', clienteId: '' })
@@ -36,15 +32,15 @@ export default function VeiculosPage() {
       const r = await api.post(`/veiculos?clienteId=${clienteId}`, dadosVeiculo)
       setVeiculos(prev => [...prev, r.data])
     } catch (err) {
-      console.error("Falha ao salvar veículo", err)
-      alert("Erro ao salvar veículo no banco de dados.")
+      console.error('Falha ao salvar veiculo', err)
+      alert('Erro ao salvar veiculo no banco de dados.')
     }
     setModal(false)
     setForm({ placa: '', modelo: '', marca: '', clienteId: '' })
   }
 
   function handleDelete(id) {
-    if (!confirm('Remover veículo?')) return
+    if (!confirm('Remover veiculo?')) return
     api.delete(`/veiculos/${id}`).catch(() => {})
     setVeiculos(prev => prev.filter(v => v.id !== id))
   }
@@ -53,24 +49,29 @@ export default function VeiculosPage() {
     <main className="page-content">
       <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
         <h2 className="mb-0">
-          <i className="bi bi-truck me-2 text-primary"></i>Veículos
+          <i className="bi bi-truck me-2 text-primary"></i>{ehCliente ? 'Meus Veiculos' : 'Veiculos'}
         </h2>
-        <button id="btn-novo-agendamento" onClick={() => setModal(true)}>
-          <i className="bi bi-plus-lg"></i>Novo Veículo
-        </button>
+        {!ehCliente && (
+          <button id="btn-novo-agendamento" onClick={() => setModal(true)}>
+            <i className="bi bi-plus-lg"></i>Novo Veiculo
+          </button>
+        )}
       </div>
 
       <div className="filtros-container mb-3">
         <div>
           <label htmlFor="busca-veiculo">Buscar</label>
-          <input id="busca-veiculo" type="text" placeholder="Placa, modelo, marca ou cliente…" value={busca} onChange={e => setBusca(e.target.value)} />
+          <input id="busca-veiculo" type="text" placeholder="Placa, modelo, marca ou cliente" value={busca} onChange={e => setBusca(e.target.value)} />
         </div>
       </div>
 
       <div className="table-responsive">
         <table>
           <thead>
-            <tr><th>#</th><th>Placa</th><th>Modelo</th><th>Marca</th><th>Cliente</th><th style={{ textAlign: 'center' }}>Ações</th></tr>
+            <tr>
+              <th>#</th><th>Placa</th><th>Modelo</th><th>Marca</th><th>Cliente</th>
+              {!ehCliente && <th style={{ textAlign: 'center' }}>Acoes</th>}
+            </tr>
           </thead>
           <tbody>
             {filtrados.map(v => (
@@ -80,23 +81,25 @@ export default function VeiculosPage() {
                 <td>{v.modelo}</td>
                 <td>{v.marca}</td>
                 <td>{v.cliente?.nome}</td>
-                <td style={{ textAlign: 'center' }}>
-                  <button className="btn-cancelar" onClick={() => handleDelete(v.id)}>
-                    <i className="bi bi-trash"></i>
-                  </button>
-                </td>
+                {!ehCliente && (
+                  <td style={{ textAlign: 'center' }}>
+                    <button className="btn-cancelar" onClick={() => handleDelete(v.id)}>
+                      <i className="bi bi-trash"></i>
+                    </button>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      {modal && (
+      {modal && !ehCliente && (
         <div className="modal d-block" tabIndex="-1" style={{ background: 'rgba(0,0,0,0.4)' }}>
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">Novo Veículo</h5>
+                <h5 className="modal-title">Novo Veiculo</h5>
                 <button type="button" className="btn-close" onClick={() => setModal(false)}></button>
               </div>
               <form onSubmit={handleSave} id="form-veiculo">

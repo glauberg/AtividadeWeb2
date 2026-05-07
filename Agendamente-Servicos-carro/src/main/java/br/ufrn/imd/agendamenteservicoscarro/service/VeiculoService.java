@@ -5,6 +5,7 @@ import br.ufrn.imd.agendamenteservicoscarro.model.Veiculo;
 import br.ufrn.imd.agendamenteservicoscarro.repository.ClienteRepository;
 import br.ufrn.imd.agendamenteservicoscarro.repository.VeiculoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,49 +18,62 @@ public class VeiculoService {
 
     private final VeiculoRepository veiculoRepository;
     private final ClienteRepository clienteRepository;
+    private final UsuarioLogadoService usuarioLogadoService;
 
-    /** Lista todos os veículos cadastrados. */
     @Transactional(readOnly = true)
     public List<Veiculo> listarTodos() {
+        if (usuarioLogadoService.ehCliente()) {
+            return veiculoRepository.findByClienteId(usuarioLogadoService.clienteIdObrigatorio());
+        }
         return veiculoRepository.findAll();
     }
 
-    /** Lista todos os veículos de um cliente específico. */
     @Transactional(readOnly = true)
     public List<Veiculo> listarPorCliente(Long clienteId) {
+        if (usuarioLogadoService.ehCliente()) {
+            Long clienteLogadoId = usuarioLogadoService.clienteIdObrigatorio();
+            if (!clienteLogadoId.equals(clienteId)) {
+                throw new AccessDeniedException("Cliente so pode ver seus proprios veiculos.");
+            }
+        }
+
         if (!clienteRepository.existsById(clienteId)) {
-            throw new NoSuchElementException("Cliente não encontrado: id=" + clienteId);
+            throw new NoSuchElementException("Cliente nao encontrado: id=" + clienteId);
         }
         return veiculoRepository.findByClienteId(clienteId);
     }
 
-    /** Busca um veículo pelo ID. */
     @Transactional(readOnly = true)
     public Veiculo buscarPorId(Long id) {
-        return veiculoRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Veículo não encontrado: id=" + id));
+        Veiculo veiculo = veiculoRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Veiculo nao encontrado: id=" + id));
+        validarAcessoCliente(veiculo);
+        return veiculo;
     }
 
-    /** Cadastra um novo veículo vinculado a um cliente. Valida placa duplicada. */
     @Transactional
     public Veiculo cadastrar(Long clienteId, Veiculo veiculo) {
+        Long clienteAlvoId = usuarioLogadoService.ehCliente()
+                ? usuarioLogadoService.clienteIdObrigatorio()
+                : clienteId;
+
         if (veiculoRepository.existsByPlaca(veiculo.getPlaca())) {
-            throw new IllegalArgumentException("Já existe um veículo com a placa informada.");
+            throw new IllegalArgumentException("Ja existe um veiculo com a placa informada.");
         }
-        Cliente cliente = clienteRepository.findById(clienteId)
-                .orElseThrow(() -> new NoSuchElementException("Cliente não encontrado: id=" + clienteId));
+
+        Cliente cliente = clienteRepository.findById(clienteAlvoId)
+                .orElseThrow(() -> new NoSuchElementException("Cliente nao encontrado: id=" + clienteAlvoId));
         veiculo.setCliente(cliente);
         return veiculoRepository.save(veiculo);
     }
 
-    /** Atualiza os dados de um veículo. Valida placa duplicada se alterada. */
     @Transactional
     public Veiculo atualizar(Long id, Veiculo dadosNovos) {
         Veiculo existente = buscarPorId(id);
 
         if (!existente.getPlaca().equals(dadosNovos.getPlaca())
                 && veiculoRepository.existsByPlaca(dadosNovos.getPlaca())) {
-            throw new IllegalArgumentException("Já existe um veículo com a placa informada.");
+            throw new IllegalArgumentException("Ja existe um veiculo com a placa informada.");
         }
 
         existente.setPlaca(dadosNovos.getPlaca());
@@ -69,12 +83,16 @@ public class VeiculoService {
         return veiculoRepository.save(existente);
     }
 
-    /** Remove um veículo pelo ID. */
     @Transactional
     public void remover(Long id) {
-        if (!veiculoRepository.existsById(id)) {
-            throw new NoSuchElementException("Veículo não encontrado: id=" + id);
+        Veiculo veiculo = buscarPorId(id);
+        veiculoRepository.delete(veiculo);
+    }
+
+    private void validarAcessoCliente(Veiculo veiculo) {
+        if (usuarioLogadoService.ehCliente()
+                && !veiculo.getCliente().getId().equals(usuarioLogadoService.clienteIdObrigatorio())) {
+            throw new AccessDeniedException("Cliente so pode acessar seus proprios veiculos.");
         }
-        veiculoRepository.deleteById(id);
     }
 }

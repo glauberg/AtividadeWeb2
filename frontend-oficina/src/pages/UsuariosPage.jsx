@@ -1,12 +1,7 @@
 import { useState, useEffect } from 'react'
 import api from '../services/api'
 
-const MOCK = [
-  { id: 1, email: 'admin@oficina.com',     nome: 'Administrador', ativo: true, perfil: { nome: 'ROLE_GERENTE'  } },
-  { id: 2, email: 'joao@email.com',        nome: 'João',          ativo: true, perfil: { nome: 'ROLE_CLIENTE'  } },
-  { id: 3, email: 'maria@email.com',       nome: 'Maria',         ativo: true, perfil: { nome: 'ROLE_CLIENTE'  } },
-  { id: 5, email: 'pedro.mec@oficina.com', nome: 'Pedro',         ativo: true, perfil: { nome: 'ROLE_MECANICO' } },
-]
+
 
 const LABEL_PERFIL = {
   ROLE_CLIENTE:  { label: 'Cliente',  cls: 'bg-info text-dark'    },

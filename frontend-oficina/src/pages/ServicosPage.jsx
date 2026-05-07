@@ -1,14 +1,7 @@
 import { useState, useEffect } from 'react'
 import api from '../services/api'
 
-const MOCK = [
-  { id: 1, nome: 'Troca de Óleo', precoBase: 150 },
-  { id: 2, nome: 'Alinhamento',   precoBase: 100 },
-  { id: 3, nome: 'Balanceamento', precoBase: 80  },
-  { id: 4, nome: 'Revisão Geral', precoBase: 450 },
-  { id: 5, nome: 'Troca de Pastilhas', precoBase: 200 },
-  { id: 6, nome: 'Limpeza de Bicos',   precoBase: 120 },
-]
+
 
 export default function ServicosPage() {
   const [servicos, setServicos] = useState([])

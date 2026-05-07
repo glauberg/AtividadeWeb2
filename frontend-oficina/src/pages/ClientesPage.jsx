@@ -1,11 +1,7 @@
 import { useState, useEffect } from 'react'
 import api from '../services/api'
 
-const MOCK = [
-  { id: 2, nome: 'Cliente João', cpf: '11111111111', telefone: '84911111111' },
-  { id: 3, nome: 'Cliente Maria', cpf: '22222222222', telefone: '84922222222' },
-  { id: 4, nome: 'Cliente Carlos', cpf: '33333333333', telefone: '84933333333' },
-]
+
 
 export default function ClientesPage() {
   const [clientes, setClientes] = useState([])

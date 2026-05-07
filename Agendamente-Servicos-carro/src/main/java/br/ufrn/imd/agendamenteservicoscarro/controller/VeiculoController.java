@@ -5,6 +5,7 @@ import br.ufrn.imd.agendamenteservicoscarro.service.VeiculoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,6 +40,8 @@ public class VeiculoController {
     public ResponseEntity<Object> buscarPorId(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(veiculoService.buscarPorId(id));
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
@@ -55,6 +58,8 @@ public class VeiculoController {
         try {
             Veiculo salvo = veiculoService.cadastrar(clienteId, veiculo);
             return ResponseEntity.status(HttpStatus.CREATED).body(salvo);
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (IllegalArgumentException e) {
@@ -72,6 +77,8 @@ public class VeiculoController {
             @RequestBody Veiculo dadosNovos) {
         try {
             return ResponseEntity.ok(veiculoService.atualizar(id, dadosNovos));
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (IllegalArgumentException e) {
@@ -88,6 +95,8 @@ public class VeiculoController {
         try {
             veiculoService.remover(id);
             return ResponseEntity.noContent().build();
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
