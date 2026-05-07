@@ -29,5 +29,6 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
     List<Agendamento> findByStatus(StatusAgendamento status);
 
     /** Lista agendamentos de um mecânico específico. */
-    List<Agendamento> findByMecanicoResponsavelId(Long funcionarioId);
+    @Query("SELECT DISTINCT a FROM Agendamento a LEFT JOIN FETCH a.servicos WHERE a.mecanicoResponsavel.id = :funcionarioId")
+    List<Agendamento> findByMecanicoResponsavelIdComServicos(@Param("funcionarioId") Long funcionarioId);
 }

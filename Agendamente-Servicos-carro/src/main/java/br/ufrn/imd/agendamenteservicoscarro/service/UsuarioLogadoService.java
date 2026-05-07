@@ -1,6 +1,7 @@
 package br.ufrn.imd.agendamenteservicoscarro.service;
 
 import br.ufrn.imd.agendamenteservicoscarro.model.Cliente;
+import br.ufrn.imd.agendamenteservicoscarro.model.Funcionario;
 import br.ufrn.imd.agendamenteservicoscarro.model.Pessoa;
 import br.ufrn.imd.agendamenteservicoscarro.model.Usuario;
 import br.ufrn.imd.agendamenteservicoscarro.model.enums.PerfilNome;
@@ -34,6 +35,14 @@ public class UsuarioLogadoService {
         return temPerfil(PerfilNome.ROLE_CLIENTE);
     }
 
+    public boolean ehMecanico() {
+        return temPerfil(PerfilNome.ROLE_MECANICO);
+    }
+
+    public boolean ehGerente() {
+        return temPerfil(PerfilNome.ROLE_GERENTE);
+    }
+
     public Long clienteIdObrigatorio() {
         Pessoa pessoa = atual().getPessoa();
         if (pessoa instanceof Cliente cliente) {
@@ -42,8 +51,22 @@ public class UsuarioLogadoService {
         throw new AccessDeniedException("Usuario logado nao e cliente.");
     }
 
+    public Long funcionarioIdObrigatorio() {
+        Pessoa pessoa = atual().getPessoa();
+        if (pessoa instanceof Funcionario funcionario) {
+            return funcionario.getId();
+        }
+        throw new AccessDeniedException("Usuario logado nao e funcionario.");
+    }
+
     public void negarCliente(String mensagem) {
         if (ehCliente()) {
+            throw new AccessDeniedException(mensagem);
+        }
+    }
+
+    public void exigirGerente(String mensagem) {
+        if (!ehGerente()) {
             throw new AccessDeniedException(mensagem);
         }
     }

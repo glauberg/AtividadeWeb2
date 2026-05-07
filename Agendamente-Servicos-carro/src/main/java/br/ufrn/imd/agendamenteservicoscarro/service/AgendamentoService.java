@@ -45,9 +45,15 @@ public class AgendamentoService {
                 ? usuarioLogadoService.clienteIdObrigatorio()
                 : clienteId;
 
-        List<Agendamento> lista = clienteFiltro != null
-                ? agendamentoRepository.findByClienteIdComServicos(clienteFiltro)
-                : agendamentoRepository.findAllComServicos();
+        List<Agendamento> lista;
+        if (clienteFiltro != null) {
+            lista = agendamentoRepository.findByClienteIdComServicos(clienteFiltro);
+        } else if (usuarioLogadoService.ehMecanico()) {
+            lista = agendamentoRepository.findByMecanicoResponsavelIdComServicos(
+                    usuarioLogadoService.funcionarioIdObrigatorio());
+        } else {
+            lista = agendamentoRepository.findAllComServicos();
+        }
 
         return lista.stream().map(AgendamentoResponse::from).toList();
     }
@@ -111,6 +117,7 @@ public class AgendamentoService {
     public AgendamentoResponse atualizarStatus(Long id, String novoStatus) {
         usuarioLogadoService.negarCliente("Cliente nao pode alterar status nem finalizar servico.");
         Agendamento agendamento = buscarEntidade(id);
+        validarAcessoMecanico(agendamento);
         StatusAgendamento statusAnterior = agendamento.getStatus();
         StatusAgendamento status = StatusAgendamento.valueOf(novoStatus);
         validarTransicaoStatus(statusAnterior, status);
@@ -137,6 +144,16 @@ public class AgendamentoService {
         if (usuarioLogadoService.ehCliente()
                 && !agendamento.getCliente().getId().equals(usuarioLogadoService.clienteIdObrigatorio())) {
             throw new AccessDeniedException("Cliente so pode acessar seus proprios agendamentos.");
+        }
+    }
+
+    private void validarAcessoMecanico(Agendamento agendamento) {
+        if (usuarioLogadoService.ehMecanico()) {
+            Long funcionarioId = usuarioLogadoService.funcionarioIdObrigatorio();
+            if (agendamento.getMecanicoResponsavel() == null
+                    || !funcionarioId.equals(agendamento.getMecanicoResponsavel().getId())) {
+                throw new AccessDeniedException("Mecanico so pode atuar nos atendimentos atribuidos a ele.");
+            }
         }
     }
 

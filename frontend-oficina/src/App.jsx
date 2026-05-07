@@ -11,6 +11,7 @@ import AgendarServicoPage  from './pages/AgendarServicoPage'
 import ClientesPage        from './pages/ClientesPage'
 import VeiculosPage        from './pages/VeiculosPage'
 import ServicosPage        from './pages/ServicosPage'
+import ProdutosPage        from './pages/ProdutosPage'
 import AgendamentosPage    from './pages/AgendamentosPage'
 import UsuariosPage        from './pages/UsuariosPage'
 
@@ -70,6 +71,12 @@ function AppRoutes() {
       <Route path="/servicos" element={
         <PrivateRoute roles={['ROLE_GERENTE']}>
           <Layout><ServicosPage /></Layout>
+        </PrivateRoute>
+      } />
+
+      <Route path="/produtos" element={
+        <PrivateRoute roles={['ROLE_GERENTE']}>
+          <Layout><ProdutosPage /></Layout>
         </PrivateRoute>
       } />
 

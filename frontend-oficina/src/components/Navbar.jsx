@@ -76,6 +76,11 @@ export default function Navbar() {
                   </Link>
                 </li>
                 <li className="nav-item">
+                  <Link className="nav-link" to="/produtos">
+                    <i className="bi bi-box-seam me-1"></i>Produtos
+                  </Link>
+                </li>
+                <li className="nav-item">
                   <Link className="nav-link" to="/agendamentos">
                     <i className="bi bi-calendar2-week me-1"></i>Agendamentos
                   </Link>

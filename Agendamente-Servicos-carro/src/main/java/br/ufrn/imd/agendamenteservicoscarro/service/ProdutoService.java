@@ -54,7 +54,7 @@ public class ProdutoService {
 
     @Transactional
     public Produto cadastrar(Produto produto) {
-        usuarioLogadoService.negarCliente("Cliente nao pode cadastrar produto.");
+        usuarioLogadoService.exigirGerente("Apenas gerente pode cadastrar produto.");
         validarProduto(produto);
         if (produto.getEstoque() == null) {
             produto.setEstoque(0);
@@ -64,7 +64,7 @@ public class ProdutoService {
 
     @Transactional
     public Produto atualizar(Long id, Produto dadosNovos) {
-        usuarioLogadoService.negarCliente("Cliente nao pode atualizar produto.");
+        usuarioLogadoService.exigirGerente("Apenas gerente pode atualizar produto.");
         validarProduto(dadosNovos);
 
         Produto existente = buscarPorId(id);
@@ -78,7 +78,7 @@ public class ProdutoService {
 
     @Transactional
     public void remover(Long id) {
-        usuarioLogadoService.negarCliente("Cliente nao pode remover produto.");
+        usuarioLogadoService.exigirGerente("Apenas gerente pode remover produto.");
         if (!produtoRepository.existsById(id)) {
             throw new NoSuchElementException("Produto nao encontrado: id=" + id);
         }
