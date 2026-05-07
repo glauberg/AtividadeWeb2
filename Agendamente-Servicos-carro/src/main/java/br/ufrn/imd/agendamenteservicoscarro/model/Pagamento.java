@@ -1,5 +1,6 @@
 package br.ufrn.imd.agendamenteservicoscarro.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import br.ufrn.imd.agendamenteservicoscarro.model.enums.MetodoPagamento;
 import br.ufrn.imd.agendamenteservicoscarro.model.enums.StatusPagamento;
 import jakarta.persistence.*;
@@ -33,6 +34,7 @@ public class Pagamento {
     @Column(nullable = false)
     private Double valorPago;
 
+    @JsonIgnore
     @OneToOne(optional = false)
     @JoinColumn(name = "agendamento_id", nullable = false, unique = true)
     private Agendamento agendamento;
