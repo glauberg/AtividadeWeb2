@@ -1,0 +1,13 @@
+erDiagram
+    PESSOA ||--o{ CLIENTE : possui
+    PESSOA ||--o{ FUNCIONARIO : possui
+    PESSOA ||--o{ USUARIO : referencia
+    CLIENTE ||--o{ VEICULO : possui
+    AGENDAMENTO }o--|| CLIENTE : pertence_a
+    AGENDAMENTO }o--|| VEICULO : para_veiculo
+    AGENDAMENTO }o--o{ SERVICO : inclui
+    AGENDAMENTO ||--o{ ITEM_PRODUTO : possui
+    ITEM_PRODUTO }o--|| PRODUTO : referencia
+    AGENDAMENTO ||--o{ PAGAMENTO : tem
+    USUARIO }o--|| PERFIL : tem
+    PERFIL ||--o{ USUARIO : associa
